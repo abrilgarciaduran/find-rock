@@ -6,10 +6,6 @@ class SearchBar extends React.Component {
     state = {
         busqueda: ""
     }
-    handleChange = e => {
-        this.setState({ busqueda: e.target.value })
-        console.log(e.target.value)
-    }
     handleClick = e => {
         e.preventDefault()
         console.log(e, e.target, e.target.name)
@@ -30,14 +26,15 @@ class SearchBar extends React.Component {
                         </div>
                         <div className="col-md-4">
                             <form name="form" className="form-inline" onSubmit={this.handleSubmit}>
-                                <div className="form-group mx-sm-3 mb-2">
+                                <div className="busqueda">
                                     <input
                                         name="busqueda"
                                         type="text"
-                                        className="form-control"
-                                        placeholder="Busca una banda"
+                                        id="buscar"
                                         value={this.props.busqueda}
-                                        onChange={this.props.onChange} />
+                                        placeholder="Busca una banda"
+                                        onChange={this.props.onChange}
+                                    />
                                 </div>
                             </form>
                         </div>

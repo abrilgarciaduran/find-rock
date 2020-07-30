@@ -31,6 +31,10 @@ export default App;
 
 
 
+// Application name	find-rock-abril
+// API key	c89dddf64b4de3bfbad80ab13ff1a1b2
+// Shared secret	02b1b6f8978f67b6b82fc7d0785724d1
+// Registered to	abrilgarciadd
 
 
 

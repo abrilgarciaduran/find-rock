@@ -1,36 +1,117 @@
 import React, { Component } from "react";
 import SearchBar from './components/search-bar.js';
 import SimilarArtist from './components/similar-artist.js'
+import Loading from './components/loading.js';
+import Error from './components/error.js';
+import { Link } from 'react-router-dom'
+import logo from "./logo.svg";
 import './page-artist.css'
 
 
 class PageArtist extends Component {
     state = {
-        busqueda: ''
+        busqueda: '',
+        data: {
+            artist: {
+                image: [
+                    { "#text": "" },
+                    { "#text": "" },
+                    { "#text": "" },
+                    { "#text": "" },
+                    { "#text": "" }
+                ],
+                bio: {
+                    summary: ""
+                },
+                similar: {
+                    artist: [
+                        {
+                            name: "",
+                            url: "",
+                            image: [
+                                { "#text": "" },
+                                { "#text": "" },
+                                { "#text": "" },
+                                { "#text": "" },
+                                { "#text": "" }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
     };
     changeHandle = e => {
         this.setState({
             [e.target.name]: e.target.value
         })
     }
+    componentDidMount() {
+        this.fetchData()
+    }
+    componentDidUpdate(prevProps) {
+        if (this.props.location !== prevProps.location) {
+            this.fetchData()
+        }
+    }
+    fetchData = async () => {
+        let artista = this.props.history.location.search.substr(1);
+        let url =
+            "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=" +
+            artista +
+            "&api_key=6c028a05bb3337cbf567aa148b8839cf&format=json";
+        this.setState({
+            loading: true,
+            error: false
+        })
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            console.log(data)
+            if (data.error) {
+                this.setState({
+                    loading: false,
+                    error: true,
+                    errorMessage: data.message
+                })
+            } else {
+                this.setState({
+                    error: false,
+                    data: data,
+                    loading: false
+                })
+            }
+        } catch (e) {
+            this.setState({
+                error: true
+            })
+        }
+    }
     render() {
         return (
             <React.Fragment>
-                <SearchBar onChange={this.changeHandle} busqueda={this.state.busqueda} />
+                {/* <SearchBar onChange={this.changeHandle} busqueda={this.state.busqueda} /> */}
+                <div className="col-md-2">
+                    <Link to="/">
+                        <img src={logo} alt="" className="logo-barra" />
+                    </Link>
+                </div>
+                {this.state.loading && <Loading />}
+                {this.state.error && <Error errorMessage={this.state.errorMessage} />}
                 <div className="container">
                     <div className="row centrar">
                         <div className="col-md-3" />
                         <div className="col-md-6">
                             <img
-                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRCrbYYJhIg9mDDSpmQuJtpmjvxK-oZN5q5aQ&usqp=CAU"
+                                src={this.state.data.artist.image[3]["#text"]}
                                 alt="Gustavo Ceratti"
                                 className="pic-artist margin50" />
-                            <h2>Gustavo Ceratti</h2>
-                            <p>Gustavo Adrián Cerati (Buenos Aires, 11 de agosto de 1959-ibidem, 4 de septiembre de 2014)3​4​5​ fue un músico, cantautor, compositor y productor discográfico argentino. Obtuvo reconocimiento internacional por haber sido el cantante, guitarrista y compositor principal de la banda de rock Soda Stereo. Es considerado junto a Charly García y a Luis Alberto Spinetta uno de los músicos más importantes, populares e influyentes del rock latinoamericano.</p>
+                            <h2>{this.state.data.artist.name}</h2>
+                            <p>{this.state.data.artist.bio.summary}</p>
                         </div>
                     </div>
                     <div>
-                        <SimilarArtist />
+                        <SimilarArtist data={this.state.data.artist.similar.artist} />
                     </div>
                 </div>
 

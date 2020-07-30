@@ -7,7 +7,7 @@
 }
 
 .pic {
-    width: 180px;
+    width: 160px;
     border-radius: 50%;
     border: solid 1px #f4f4f4;
 }
@@ -21,7 +21,7 @@
 .titulo {
     font-size: 15px;
     width: 100%;
-    color: #ffffff;
+    color: #b4b4b4;
     overflow: hidden;
     text-align: center;
     margin-top: -90px;
